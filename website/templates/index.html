@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Avatar</title>
+    <script src="{% static 'js/stream_avatar.js' %}"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        video {
+            display: block;
+            margin: 0 auto;
+        }
+
+        input {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <video id="talk-video" width="640" height="480" playsinline>
+            <source src="{% static 'videos/test_video.mp4' %}" type="video/mp4">
+        </video>
+        <br>
+        <button onclick="playVideo()">Play Video</button>
+        <br>
+        <input type="text" id="input-text" placeholder="Type your message here" onkeydown="handleKeyPress(event)">
+    </div>
+
+    <script>
+    var video = document.getElementById('talk-video');
+
+    function playVideo() {
+        video.play();
+    }
+    </script>
+
+
+</body>
+</html>
