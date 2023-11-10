@@ -30,7 +30,7 @@
     </style>
 </head>
 <body>
-    <div class="container" style="text-align: center;">
+    <div class="container" style="text-align: center; border: 2px solid #ccc;">
         <video id="talk-video" width="640" height="480" poster="{% static 'images/dor_black_and_white.jpg' %}" playsinline autoplay></video>
 <!--        <br>-->
 <!--        <label id="peer-status-label"></label>-->
@@ -114,6 +114,7 @@
 
         talkButton.style.display = 'none';
         inputTextArea.style.display = 'block';
+        return;
 
         const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
           {
@@ -227,7 +228,7 @@
 
     async function createStream(stream_text) {
         if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
-
+            return;
             const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
               {
                 method: 'POST',
