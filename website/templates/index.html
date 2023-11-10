@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>My Avatar</title>
     <script src="{% static 'js/stream_avatar.js' %}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
         body {
             display: flex;
@@ -29,20 +30,21 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <video id="talk-video" width="640" height="480" playsinline></video>
+    <div class="container" style="text-align: center;">
+        <video id="talk-video" width="640" height="480" poster="{% static 'images/dor_black_and_white.jpg' %}" playsinline autoplay></video>
+<!--        <br>-->
+<!--        <label id="peer-status-label"></label>-->
+<!--        <br>-->
+<!--        <label id="ice-status-label"></label>-->
+<!--        <br>-->
+<!--        <label id="ice-gathering-status-label"></label>-->
+<!--        <br>-->
+<!--        <label id="signaling-status-label"></label>-->
         <br>
-        <label id="peer-status-label"></label>
-        <br>
-        <label id="ice-status-label"></label>
-        <br>
-        <label id="ice-gathering-status-label"></label>
-        <br>
-        <label id="signaling-status-label"></label>
-        <br>
-        <button id="connect-button">Connect</button>
-        <button id="talk-button">Start</button>
-        <button id="destroy-button">Destroy</button>
+<!--        <button id="connect-button">Connect</button>-->
+        <input class="form-control" id="inputTextArea" aria-describedby="emailHelp" placeholder="Talk with me" style="display: none;">
+        <button id="talk-button" class="btn btn-warning" style="width: 150px; height: 30px; padding: 3px 0 10px 0;" disabled>Loading...</button>
+<!--        <button id="destroy-button">Destroy</button>-->
     </div>
 
     <script>
@@ -61,13 +63,13 @@
     let sessionClientAnswer;
 
     const talkVideo = document.getElementById('talk-video');
+    const inputTextArea = document.getElementById('inputTextArea');
     const peerStatusLabel = document.getElementById('peer-status-label');
     const iceStatusLabel = document.getElementById('ice-status-label');
     const iceGatheringStatusLabel = document.getElementById('ice-gathering-status-label');
     const signalingStatusLabel = document.getElementById('signaling-status-label');
 
-    const connectButton = document.getElementById('connect-button');
-    connectButton.onclick = async () => {
+    async function connectToStream() {
       if (peerConnection && peerConnection.connectionState === 'connected') {
         return;
       }
@@ -79,7 +81,7 @@
         method: 'POST',
         headers: {'Authorization': `Basic ${DID_API.key}`, 'Content-Type': 'application/json'},
         body: JSON.stringify({
-          source_url: "https://dor-demo-s3.s3.eu-west-3.amazonaws.com/black+and+white+dor.JPG"
+          source_url: "https://dor-demo-s3.s3.eu-west-3.amazonaws.com/dor+black+and+white.jpg"
         }),
       });
 
@@ -109,6 +111,10 @@
     talkButton.onclick = async () => {
       // connectionState not supported in firefox
       if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
+
+        talkButton.style.display = 'none';
+        inputTextArea.style.display = 'block';
+
         const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
           {
             method: 'POST',
@@ -122,7 +128,7 @@
                   voice_id: 'en-US-JennyNeural'
                 },
                 ssml: 'false',
-                input: 'Hello world'
+                input: 'Hey i am dor 2.0?'
               },
               config: {fluent: 'false', pad_audio: '0.0'},
               'session_id': sessionId
@@ -130,23 +136,6 @@
           });
     }};
 
-    const destroyButton = document.getElementById('destroy-button');
-    destroyButton.onclick = async () => {
-        await fetch(`${DID_API.url}/talks/streams/${streamId}`,
-            {
-            method: 'DELETE',
-            headers: {Authorization: `Basic ${DID_API.key}`, 'Content-Type': 'application/json'},
-            body: JSON.stringify({session_id: sessionId})
-            });
-
-        stopAllStreams();
-        closePC();
-    };
-
-    function onIceGatheringStateChange() {
-        iceGatheringStatusLabel.innerText = peerConnection.iceGatheringState;
-        iceGatheringStatusLabel.className = 'iceGatheringState-' + peerConnection.iceGatheringState;
-    }
 
     function onIceCandidate(event) {
         console.log('onIceCandidate', event);
@@ -163,23 +152,14 @@
     }
 
     function onIceConnectionStateChange() {
-        iceStatusLabel.innerText = peerConnection.iceConnectionState;
-        iceStatusLabel.className = 'iceConnectionState-' + peerConnection.iceConnectionState;
         if (peerConnection.iceConnectionState === 'failed' || peerConnection.iceConnectionState === 'closed') {
             stopAllStreams();
             closePC();
         }
-    }
-
-    function onConnectionStateChange() {
-        // not supported in firefox
-        peerStatusLabel.innerText = peerConnection.connectionState;
-        peerStatusLabel.className = 'peerConnectionState-' + peerConnection.connectionState;
-    }
-
-    function onSignalingStateChange() {
-        signalingStatusLabel.innerText = peerConnection.signalingState;
-        signalingStatusLabel.className = 'signalingState-' + peerConnection.signalingState;
+        if (peerConnection.iceConnectionState === 'connected') {
+            talkButton.removeAttribute('disabled');
+            talkButton.textContent = 'Start';
+        }
     }
 
     function onTrack(event) {
@@ -190,11 +170,8 @@
     async function createPeerConnection(offer, iceServers) {
         if (!peerConnection) {
             peerConnection = new RTCPeerConnection({iceServers});
-            peerConnection.addEventListener('icegatheringstatechange', onIceGatheringStateChange, true);
             peerConnection.addEventListener('icecandidate', onIceCandidate, true);
             peerConnection.addEventListener('iceconnectionstatechange', onIceConnectionStateChange, true);
-            peerConnection.addEventListener('connectionstatechange', onConnectionStateChange, true);
-            peerConnection.addEventListener('signalingstatechange', onSignalingStateChange, true);
             peerConnection.addEventListener('track', onTrack, true);
         }
 
@@ -247,6 +224,44 @@
             peerConnection = null;
         }
     }
+
+    async function createStream(stream_text) {
+        if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
+
+            const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
+              {
+                method: 'POST',
+                headers: { Authorization: `Basic ${DID_API.key}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  script: {
+                    type: 'text',
+                    subtitles: 'false',
+                    provider: {
+                      type: 'microsoft',
+                      voice_id: 'en-US-JennyNeural'
+                    },
+                    ssml: 'false',
+                    input: stream_text
+                  },
+                  config: {fluent: 'false', pad_audio: '0.0'},
+                  'session_id': sessionId
+                })
+              });
+            inputTextArea.placeholder = 'Talk to me';
+        }
+    };
+
+    inputTextArea.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            var inputText = inputTextArea.value;
+            inputTextArea.value = '';
+            inputTextArea.placeholder = 'Thinking...';
+            createStream(inputText);
+        }
+    });
+
+
+    connectToStream();
 
     </script>
 
