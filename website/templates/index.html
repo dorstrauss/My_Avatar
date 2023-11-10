@@ -30,21 +30,10 @@
     </style>
 </head>
 <body>
-    <div class="container" style="text-align: center; border: 2px solid #ccc;">
+    <div class="container" style="text-align: center; height: 95vh; width: 115vh; overflow: auto; border-radius: 20px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
         <video id="talk-video" width="640" height="480" poster="{% static 'images/dor_black_and_white.jpg' %}" playsinline autoplay></video>
-<!--        <br>-->
-<!--        <label id="peer-status-label"></label>-->
-<!--        <br>-->
-<!--        <label id="ice-status-label"></label>-->
-<!--        <br>-->
-<!--        <label id="ice-gathering-status-label"></label>-->
-<!--        <br>-->
-<!--        <label id="signaling-status-label"></label>-->
-        <br>
-<!--        <button id="connect-button">Connect</button>-->
-        <input class="form-control" id="inputTextArea" aria-describedby="emailHelp" placeholder="Talk with me" style="display: none;">
-        <button id="talk-button" class="btn btn-warning" style="width: 150px; height: 30px; padding: 3px 0 10px 0;" disabled>Loading...</button>
-<!--        <button id="destroy-button">Destroy</button>-->
+        <input class="form-control" id="inputTextArea" aria-describedby="emailHelp" placeholder="Talk with me" style="display: none; margin-bottom: 10px;">
+        <button id="talk-button" class="btn btn-warning" style="width: 150px; padding: 3px 0 10px 0; margin-top: 3px; margin-bottom: 10px;" disabled>Loading...</button>
     </div>
 
     <script>
