@@ -30,10 +30,10 @@
     </style>
 </head>
 <body>
-    <div class="container" style="text-align: center; height: 95vh; width: 115vh; overflow: auto; border-radius: 20px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
-        <video id="talk-video" width="640" height="480" poster="{% static 'images/dor_black_and_white.jpg' %}" playsinline autoplay></video>
+    <div class="container" style="text-align: center; height: 90vh; width: 108vh; overflow: auto; border-radius: 20px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.8); background-color: rgba(37, 64, 89, 1);">
+        <video id="talk-video" width="640" height="480" poster="{% static 'images/futuristic_solider.png' %}" playsinline autoplay></video>
         <input class="form-control" id="inputTextArea" aria-describedby="emailHelp" placeholder="Talk with me" style="display: none; margin-bottom: 10px;">
-        <button id="talk-button" class="btn btn-warning" style="width: 150px; padding: 3px 0 10px 0; margin-top: 3px; margin-bottom: 10px;" disabled>Loading...</button>
+        <button id="talk-button" class="btn btn-warning" style="width: 150px; padding: 3px 0 10px 0; margin-top: 8px; margin-bottom: 10px;" disabled>Loading...</button>
     </div>
 
     <script>
@@ -57,6 +57,7 @@
     const iceStatusLabel = document.getElementById('ice-status-label');
     const iceGatheringStatusLabel = document.getElementById('ice-gathering-status-label');
     const signalingStatusLabel = document.getElementById('signaling-status-label');
+    var startingText = 'Hi i am dor 2.o, a digital version of dor. you can ask me anything.';
 
     async function connectToStream() {
       if (peerConnection && peerConnection.connectionState === 'connected') {
@@ -70,7 +71,7 @@
         method: 'POST',
         headers: {'Authorization': `Basic ${DID_API.key}`, 'Content-Type': 'application/json'},
         body: JSON.stringify({
-          source_url: "https://dor-demo-s3.s3.eu-west-3.amazonaws.com/dor+black+and+white.jpg"
+          source_url: "https://dor-demo-s3.s3.eu-west-3.amazonaws.com/futuristic_solider.png"
         }),
       });
 
@@ -103,7 +104,6 @@
 
         talkButton.style.display = 'none';
         inputTextArea.style.display = 'block';
-        return;
 
         const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
           {
@@ -118,7 +118,7 @@
                   voice_id: 'en-US-JennyNeural'
                 },
                 ssml: 'false',
-                input: 'Hey i am dor 2.0?'
+                input: startingText
               },
               config: {fluent: 'false', pad_audio: '0.0'},
               'session_id': sessionId
