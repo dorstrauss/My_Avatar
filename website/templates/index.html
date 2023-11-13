@@ -106,7 +106,7 @@
         talkButton.style.display = 'none';
         inputTextArea.style.display = 'block';
         console.log(startingText);
-        return;
+<!--        return;-->
 
         const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
           {
@@ -118,7 +118,7 @@
                 subtitles: 'false',
                 provider: {
                   type: 'microsoft',
-                  voice_id: 'en-US-JennyNeural'
+                  voice_id: 'en-US-DavisNeural'
                 },
                 ssml: 'false',
                 input: startingText
@@ -240,7 +240,7 @@
         if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
             var answerText = await getChatbotAnswer(input_text);
             console.log(answerText);
-            return;
+<!--            return;-->
 
             const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
               {
@@ -252,12 +252,12 @@
                     subtitles: 'false',
                     provider: {
                       type: 'microsoft',
-                      voice_id: 'en-US-JennyNeural'
+                      voice_id: 'en-US-DavisNeural'
                     },
                     ssml: 'false',
-                    input: stream_text
+                    input: answerText
                   },
-                  config: {fluent: 'false', pad_audio: '0.0'},
+                  config: {fluent: 'false', pad_audio: '0.0', stitch: 'true'},
                   'session_id': sessionId
                 })
               });

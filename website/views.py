@@ -23,7 +23,7 @@ def chatbot(request):
 
     loader_file = TextLoader("website/personal_gpt/personal_data.txt")
 
-    # there is a option to add data from the internet
+    # there is an option to add data from the internet
     more_data = [
         "https://aws.amazon.com/blogs/devops/using-generative-ai-amazon-bedrock-and-amazon-codeguru-to-improve-code-quality-and-security/",
         "https://aws.amazon.com/blogs/compute/building-a-serverless-document-chat-with-aws-lambda-and-amazon-bedrock/"
