@@ -30,10 +30,10 @@
     </style>
 </head>
 <body>
-    <div class="container" style="text-align: center; height: 90vh; width: 108vh; overflow: auto; border-radius: 20px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.8); background-color: rgba(37, 64, 89, 1);">
+    <div class="container" style="text-align: center; height: 99vh; width: 120vh; overflow: auto; border-radius: 20px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.8); background-color: rgba(37, 64, 89, 1);">
         <video id="talk-video" width="640" height="480" poster="{% static 'images/futuristic_solider.png' %}" playsinline autoplay></video>
-        <input class="form-control" id="inputTextArea" aria-describedby="emailHelp" placeholder="Talk with me" style="display: none; margin-bottom: 10px;">
-        <button id="talk-button" class="btn btn-warning" style="width: 150px; padding: 3px 0 10px 0; margin-top: 8px; margin-bottom: 10px;" disabled>Loading...</button>
+        <input class="form-control" id="inputTextArea" aria-describedby="emailHelp" placeholder="Talk with me" style="display: none; margin-bottom: 5px;">
+        <button id="talk-button" class="btn btn-warning" style="width: 150px; padding: 3px 0 10px 0; margin-top: 8px; margin-bottom: 5px;" disabled>Loading...</button>
     </div>
 
     <script>
@@ -120,7 +120,7 @@
                 ssml: 'false',
                 input: startingText
               },
-              config: {fluent: 'false', pad_audio: '0.0', stitch: 'true'},
+              config: {fluent: 'true', pad_audio: '0.0', stitch: 'true', sharpen: 'true'},
               'session_id': sessionId
             })
           });
