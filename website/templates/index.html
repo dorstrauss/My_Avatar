@@ -1,4 +1,5 @@
 {% load static %}
+{% csrf_token %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,12 +53,13 @@
     let sessionClientAnswer;
 
     const talkVideo = document.getElementById('talk-video');
+    const talkButton = document.getElementById('talk-button');
     const inputTextArea = document.getElementById('inputTextArea');
     const peerStatusLabel = document.getElementById('peer-status-label');
     const iceStatusLabel = document.getElementById('ice-status-label');
     const iceGatheringStatusLabel = document.getElementById('ice-gathering-status-label');
     const signalingStatusLabel = document.getElementById('signaling-status-label');
-    var startingText = 'Hi i am dor 2.o, a digital version of dor. you can ask me anything.';
+    const startingText = 'Hi i am dor 2.o, a digital version of dor. you can ask me anything.';
 
     async function connectToStream() {
       if (peerConnection && peerConnection.connectionState === 'connected') {
@@ -97,13 +99,14 @@
         });
     };
 
-    const talkButton = document.getElementById('talk-button');
     talkButton.onclick = async () => {
       // connectionState not supported in firefox
       if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
 
         talkButton.style.display = 'none';
         inputTextArea.style.display = 'block';
+        console.log(startingText);
+        return;
 
         const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
           {
@@ -179,6 +182,7 @@
 
     function setVideoElement(stream) {
         if (!stream) return;
+        inputTextArea.textContent = 'Talk with me'
         talkVideo.srcObject = stream;
 
         // safari hotfix
@@ -215,9 +219,29 @@
         }
     }
 
-    async function createStream(stream_text) {
+    async function getChatbotAnswer(input_text) {
+        const csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        try {
+            var chatbotAnswer = await fetch('{% url "chatbot" %}', {
+            method: 'POST',
+            headers: {'X-CSRFToken': csrfToken,},
+            body: JSON.stringify({input_text: input_text})
+            });
+
+            var answerTextJson = await chatbotAnswer.json();
+            var answerText = answerTextJson.answer;
+            return answerText;
+        } catch (error) {
+            console.error('Error during fetch:', error);
+        }
+    }
+
+    async function createStream(input_text) {
         if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
+            var answerText = await getChatbotAnswer(input_text);
+            console.log(answerText);
             return;
+
             const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
               {
                 method: 'POST',
