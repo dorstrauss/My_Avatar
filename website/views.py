@@ -1,5 +1,6 @@
 import os
 import json
+import datetime
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import DirectoryLoader, TextLoader, WebBaseLoader
@@ -21,8 +22,6 @@ def chatbot(request):
 
     query = json.loads(request.body.decode('utf-8'))['input_text']
 
-    loader_file = TextLoader("website/personal_gpt/personal_data.txt")
-
     # there is an option to add data from the internet
     more_data = [
         "https://aws.amazon.com/blogs/devops/using-generative-ai-amazon-bedrock-and-amazon-codeguru-to-improve-code-quality-and-security/",
@@ -30,14 +29,22 @@ def chatbot(request):
     ]
     # loader_web = WebBaseLoader(more_data)
 
-    index = VectorstoreIndexCreator().from_loaders([loader_file])
-    chain = ConversationalRetrievalChain.from_llm(
-        llm=ChatOpenAI(model="gpt-3.5-turbo"),
-        retriever=index.vectorstore.as_retriever(search_kwargs={"k": 1}),
-    )
     chat_history = []
-    result = chain({"question": query, "chat_history": chat_history})
 
+    start_time = datetime.datetime.now()
+    result = chain({"question": query, "chat_history": chat_history})
+    end_time = datetime.datetime.now()
+    elapsed_time = end_time - start_time
+    print(f'gpt took {elapsed_time}')
     print(result['answer'])
     return JsonResponse({'answer': result['answer']})
+
+
+# code outside because I want to index the data once when the server is starting
+loader_file = TextLoader("website/personal_gpt/personal_data.txt")
+index = VectorstoreIndexCreator().from_loaders([loader_file])
+chain = ConversationalRetrievalChain.from_llm(
+    llm=ChatOpenAI(model="gpt-3.5-turbo"),
+    retriever=index.vectorstore.as_retriever(search_kwargs={"k": 1}),
+)
 
