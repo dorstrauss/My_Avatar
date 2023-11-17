@@ -19,7 +19,7 @@ class HomeView(TemplateView):
 
 
 def chatbot(request):
-    answer_words_limit = 40
+    answer_words_limit = 35
 
     input = json.loads(request.body.decode('utf-8'))['input_text']
     instruction_text = f'when you answer back talk in first person as you are dor, ' \
@@ -45,10 +45,12 @@ def chatbot(request):
 
 
 # code outside because I want to index the data once when the server is starting
+print('Start indexing personal data')
 loader_file = TextLoader("website/personal_gpt/personal_data.txt")
 index = VectorstoreIndexCreator().from_loaders([loader_file])
 chain = ConversationalRetrievalChain.from_llm(
     llm=ChatOpenAI(model="gpt-3.5-turbo"),
     retriever=index.vectorstore.as_retriever(search_kwargs={"k": 1}),
 )
+print('Finished indexing')
 
