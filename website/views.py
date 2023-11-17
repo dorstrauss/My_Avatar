@@ -19,8 +19,12 @@ class HomeView(TemplateView):
 
 
 def chatbot(request):
+    answer_words_limit = 40
 
-    query = json.loads(request.body.decode('utf-8'))['input_text']
+    input = json.loads(request.body.decode('utf-8'))['input_text']
+    instruction_text = f'when you answer back talk in first person as you are dor, ' \
+                       f'and give answers no longer than {answer_words_limit} words.'
+    query = input + '\n' + instruction_text
 
     # there is an option to add data from the internet
     more_data = [
