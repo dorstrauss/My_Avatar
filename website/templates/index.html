@@ -62,6 +62,24 @@
     const signalingStatusLabel = document.getElementById('signaling-status-label');
     const startingText = 'Hi i am dor 2.o, a digital version of dor. you can ask me anything.';
 
+    let loopRunning = true;
+    function startPlaceholderLoop(word) {
+        const variations = [`${word}`, `${word}.`, `${word}..`, `${word}...`];
+        let index = 0;
+        let frame_change_time = 500;
+
+        const intervalId = setInterval(() => {
+            if (!loopRunning) {
+                clearInterval(intervalId);
+                inputTextArea.placeholder = 'Talk with me';
+                return;
+            }
+
+            inputTextArea.placeholder = variations[index];
+            index = (index + 1) % variations.length;
+        }, frame_change_time);
+    }
+
     async function connectToStream() {
       if (peerConnection && peerConnection.connectionState === 'connected') {
         return;
@@ -99,13 +117,13 @@
           body: JSON.stringify({answer: sessionClientAnswer, session_id: sessionId})
         });
 
-      inputTextArea.placeholder = 'Talk with me';
+      loopRunning = false;
       inputTextArea.disabled = false;
     };
 
     talkVideo.addEventListener('ended', () => {
+        startPlaceholderLoop('Connecting');
         connectToStream();
-        inputTextArea.placeholder = 'Connecting...';
     });
 
     talkButton.onclick = async () => {
@@ -189,11 +207,8 @@
         if (!pc) return;
         console.log('stopping peer connection');
         pc.close();
-        pc.removeEventListener('icegatheringstatechange', onIceGatheringStateChange, true);
         pc.removeEventListener('icecandidate', onIceCandidate, true);
         pc.removeEventListener('iceconnectionstatechange', onIceConnectionStateChange, true);
-        pc.removeEventListener('connectionstatechange', onConnectionStateChange, true);
-        pc.removeEventListener('signalingstatechange', onSignalingStateChange, true);
         pc.removeEventListener('track', onTrack, true);
         iceGatheringStatusLabel.innerText = '';
         signalingStatusLabel.innerText = '';
@@ -226,7 +241,7 @@
         if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
             var answerText = await getChatbotAnswer(input_text);
             console.log(answerText);
-<!--            return;-->
+            return;
 
             const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
               {
@@ -247,7 +262,8 @@
                   'session_id': sessionId
                 })
               });
-            inputTextArea.placeholder = 'Talk with me';
+
+                loopRunning = false;
         }
     };
 
@@ -255,7 +271,8 @@
         if (event.key === 'Enter') {
             var inputText = inputTextArea.value;
             inputTextArea.value = '';
-            inputTextArea.placeholder = 'Thinking...';
+            loopRunning = true;
+            startPlaceholderLoop('Thinking')
             createStream(inputText);
         }
     });
