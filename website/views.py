@@ -9,6 +9,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.http import JsonResponse
 
+
 class HomeView(TemplateView):
     template_name = 'index.html'
 
@@ -46,7 +47,7 @@ def chatbot(request):
 
 # code outside because I want to index the data once when the server is starting
 print('Start indexing personal data')
-loader_file = TextLoader("website/personal_gpt/personal_data.txt")
+loader_file = TextLoader("website/personal_gpt/personal_data.txt", encoding='UTF-8')
 index = VectorstoreIndexCreator().from_loaders([loader_file])
 chain = ConversationalRetrievalChain.from_llm(
     llm=ChatOpenAI(model="gpt-3.5-turbo"),

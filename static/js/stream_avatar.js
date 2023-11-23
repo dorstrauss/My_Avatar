@@ -197,7 +197,7 @@
         if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
             var answerText = await getChatbotAnswer(input_text);
             console.log(answerText);
-//            return;
+            return;
 
             const talkResponse = await fetch(`${DID_API_URL}/talks/streams/${streamId}`,
               {
@@ -219,7 +219,7 @@
                 })
               });
 
-                loopRunning = false;
+              loopRunning = false;
         }
     };
 
