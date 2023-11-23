@@ -22,10 +22,10 @@ class HomeView(TemplateView):
 def chatbot(request):
     answer_words_limit = 35
 
-    input = json.loads(request.body.decode('utf-8'))['input_text']
+    input_text = json.loads(request.body.decode('utf-8'))['input_text']
     instruction_text = f'when you answer back talk in first person as you are dor, ' \
                        f'and give answers no longer than {answer_words_limit} words.'
-    query = input + '\n' + instruction_text
+    query = input_text + '\n' + instruction_text
 
     # there is an option to add data from the internet
     more_data = [
@@ -37,21 +37,25 @@ def chatbot(request):
     chat_history = []
 
     start_time = datetime.datetime.now()
-    result = chain({"question": query, "chat_history": chat_history})
+    result = llm_chain.chain({"question": query, "chat_history": chat_history})
     end_time = datetime.datetime.now()
     elapsed_time = end_time - start_time
     print(f'gpt took {elapsed_time}')
     print(result['answer'])
     return JsonResponse({'answer': result['answer']})
 
+class GptChain:
 
-# code outside because I want to index the data once when the server is starting
+    def __init__(self, file_to_load: str, file_encoding: str, llm_model: str):
+        loader_file = TextLoader(file_to_load, encoding=file_encoding)
+        self.index = VectorstoreIndexCreator().from_loaders([loader_file])
+        self.chain = ConversationalRetrievalChain.from_llm(llm=ChatOpenAI(model=llm_model),
+                                                           retriever=self.index.vectorstore.as_retriever(
+                                                               search_kwargs={"k": 1}))
+
+
+# code in the outer scope because I want to index the data once when the server is starting
 print('Start indexing personal data')
-loader_file = TextLoader("website/personal_gpt/personal_data.txt", encoding='UTF-8')
-index = VectorstoreIndexCreator().from_loaders([loader_file])
-chain = ConversationalRetrievalChain.from_llm(
-    llm=ChatOpenAI(model="gpt-3.5-turbo"),
-    retriever=index.vectorstore.as_retriever(search_kwargs={"k": 1}),
-)
+llm_chain = GptChain("website/personal_gpt/personal_data.txt", file_encoding='UTF-8', llm_model="gpt-3.5-turbo")
 print('Finished indexing')
 
