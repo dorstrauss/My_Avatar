@@ -41,7 +41,7 @@ def chatbot(request):
     end_time = datetime.datetime.now()
     elapsed_time = end_time - start_time
     print(f'gpt took {elapsed_time}')
-    print(result['answer'])
+    print(f"Answer: {result['answer']}")
     return JsonResponse({'answer': result['answer']})
 
 class GptChain:

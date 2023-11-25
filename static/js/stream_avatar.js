@@ -197,8 +197,9 @@
         if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
             var answerText = await getChatbotAnswer(input_text);
             console.log(answerText);
-            return;
+//            return;
 
+            const startTime = performance.now();
             const talkResponse = await fetch(`${DID_API_URL}/talks/streams/${streamId}`,
               {
                 method: 'POST',
@@ -220,6 +221,9 @@
               });
 
               loopRunning = false;
+              const endTime = performance.now();
+              const elapsedTime = (endTime - startTime) / 1000;
+              console.log(`D-ID animation took: ${elapsedTime} seconds`);
         }
     };
 
@@ -232,3 +236,8 @@
             createStream(inputText);
         }
     });
+
+
+    function openGithub() {
+            window.open('https://github.com/dorstrauss/My_Avatar', '_blank');
+        }
