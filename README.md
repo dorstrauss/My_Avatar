@@ -15,4 +15,4 @@ Once the animation is ready it is sent back from D-ID API and streamed to the us
 Server - the website was developed using Django.
 
 ## Why
-To demonstrate the powerful capabilities of AI.
+First of all, because it is really cool! Secondly to demonstrate the powerful capabilities of AI these days.
