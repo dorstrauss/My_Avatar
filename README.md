@@ -1,27 +1,18 @@
-
-
-# Golf-Analytics backend API
-The back-end API of the web application "Golf-Analytics".
+# My Avatar Architecture
+<img width="370" height="" alt="My Avatar Architecture" src="https://github.com/dorstrauss/My_Avatar/blob/master/My%20Avatar%20Architecture.png">
 
 ## What
-This is the backend API of "Golf-Analytics" which is an App that uses a sensor to improve professional golf players performance on the field.
+My Avatar is an interactive digital version of myself.
 
 ## How
-Physically the player put our sensor on his club, login to the app, swings, the app gets the swing data of the player, analyzes it, and gives back the speed, angle, approximate distance and even recommends for the best golf club type for him.
+You ask my avatar any question, the question is sent to the server, the server processes the question and answers it using a special LLM, and the text answer is sent to D-ID API to create an animation video that is streamed to the user live.
 
-Software: I used Django to build a REST API.
-I used the built-in views and serializers to create the APIs end-points.
-I used Django built-in models to create & handle the application databases.
-I used Tokens to form a strong users authentication. 
-I used MQTT protocol combined with threads to handle the communication with the sensor.
+LLM - In order to create a high-level LLM that can respond fast and knows data about Dor Strauss I used Langchain with `gpt-3.5 turbo`, When the server starts running my personal data is indexed using vector storing. When the user asks a question Langchain uses the personal data indexing to attach the most relevant paragraphs along with the user question and send it to OpenAi API.
+
+Animation - After getting the text answer from the LLM I send a request to the D-ID API containing the image (I created the image in MidJourney), text, and voice.
+Once the animation is ready it is sent back from D-ID API and streamed to the user.
+
+Server - the website was developed using Django.
 
 ## Why
-Our mission is to develop a low-cost kit that will drastically increase players performances on the field.
-
-## Structure
-Inside the "Golf_API" directory there is a directory called "GolfAI" this is the main project directory. Inside this directory there are two importent directories, "api_app" which is the app for all the API functionality, and "GolfAI" which is the django project directory.
-
-![image](https://user-images.githubusercontent.com/97314875/216428656-8ff0e1c3-50f2-40ee-aaae-1965fb6b4996.png)
-
-
-
+To demonstrate the powerful capabilities of AI.
