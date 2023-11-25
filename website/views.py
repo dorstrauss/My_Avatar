@@ -27,13 +27,6 @@ def chatbot(request):
                        f'and give answers no longer than {answer_words_limit} words.'
     query = input_text + '\n' + instruction_text
 
-    # there is an option to add data from the internet
-    more_data = [
-        "https://aws.amazon.com/blogs/devops/using-generative-ai-amazon-bedrock-and-amazon-codeguru-to-improve-code-quality-and-security/",
-        "https://aws.amazon.com/blogs/compute/building-a-serverless-document-chat-with-aws-lambda-and-amazon-bedrock/"
-    ]
-    # loader_web = WebBaseLoader(more_data)
-
     chat_history = []
 
     start_time = datetime.datetime.now()
