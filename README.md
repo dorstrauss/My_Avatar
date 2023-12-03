@@ -1,8 +1,7 @@
 ## Example
 
 
-https://github.com/dorstrauss/My_Avatar/assets/97314875/392958e7-d2f1-4417-a43b-0d824a07fa6e
-
+https://github.com/dorstrauss/My_Avatar/assets/97314875/b8ae64b2-60bc-4ed7-aada-811d0ef1bdc0
 
 
 # My Avatar Architecture
