@@ -9,7 +9,7 @@ https://github.com/dorstrauss/My_Avatar/assets/97314875/392958e7-d2f1-4417-a43b-
 <img width="370" height="" alt="My Avatar Architecture" src="https://github.com/dorstrauss/My_Avatar/blob/master/My%20Avatar%20Architecture.png">
 
 ## What
-My Avatar is an interactive digital version of myself.
+My Avatar is an interactive AI-based digital version of myself.
 
 ## How
 You ask my avatar any question, the question is sent to the server, the server processes the question and answers it using a special LLM, and the text answer is sent to D-ID API to create an animation video that is streamed to the user live.
