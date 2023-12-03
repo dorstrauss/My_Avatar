@@ -21,7 +21,5 @@ Once the animation is ready it is sent back from D-ID API and streamed to the us
 
 **Server** - the website was developed using Django.
 
-**Deployment** - I deploy it on an AWS ECS using Docker.
-
 ## Why
 First of all, because it is really cool! Secondly to sharpen my coding skills and demonstrate the powerful capabilities of AI these days.
