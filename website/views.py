@@ -1,13 +1,9 @@
 import os
 import json
 import datetime
-from langchain.chains import ConversationalRetrievalChain
-from langchain.chat_models import ChatOpenAI
-from langchain.document_loaders import DirectoryLoader, TextLoader, WebBaseLoader
-from langchain.indexes import VectorstoreIndexCreator
-from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.http import JsonResponse
+from website.personal_gpt.chain import GptChain
 
 
 class HomeView(TemplateView):
@@ -36,15 +32,6 @@ def chatbot(request):
     print(f'gpt took {elapsed_time}')
     print(f"Answer: {result['answer']}")
     return JsonResponse({'answer': result['answer']})
-
-class GptChain:
-
-    def __init__(self, file_to_load: str, file_encoding: str, llm_model: str):
-        loader_file = TextLoader(file_to_load, encoding=file_encoding)
-        self.index = VectorstoreIndexCreator().from_loaders([loader_file])
-        self.chain = ConversationalRetrievalChain.from_llm(llm=ChatOpenAI(model=llm_model),
-                                                           retriever=self.index.vectorstore.as_retriever(
-                                                               search_kwargs={"k": 1}))
 
 
 # code in the outer scope because I want to index the data once when the server is starting
